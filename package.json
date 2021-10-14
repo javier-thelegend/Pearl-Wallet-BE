@@ -1,0 +1,32 @@
+{
+  "name": "pearl-wallet",
+  "version": "1.0.0",
+  "description": "Pearl Wallet BackEnd",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javier-thelegend/Pearl-Wallet-BE.git"
+  },
+  "author": "Oscar Cornejo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/javier-thelegend/Pearl-Wallet-BE/issues"
+  },
+  "homepage": "https://github.com/javier-thelegend/Pearl-Wallet-BE#readme",
+  "dependencies": {
+    "@firebase/app-compat": "^0.1.4",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "firebase-admin": "^9.12.0",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}
