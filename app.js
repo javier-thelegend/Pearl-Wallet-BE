@@ -8,6 +8,7 @@ const accountsRoutes = require('./src/routes/accounts');
 const currenciesRoutes = require('./src/routes/currencies');
 const usersRoutes = require('./src/routes/users');
 const exchangesRoutes = require('./src/routes/exchanges');
+const catalogsRoutes = require('./src/routes/catalogs');
 const badRequestRoutes = require('./src/routes/invalid');
 
 //Allow requests from another servers
@@ -26,6 +27,7 @@ app.use(usersRoutes);
 app.use(accountsRoutes);
 app.use(currenciesRoutes);
 app.use(exchangesRoutes);
+app.use(catalogsRoutes);
 app.use(badRequestRoutes);
 
 app.listen(server.port, () => {
