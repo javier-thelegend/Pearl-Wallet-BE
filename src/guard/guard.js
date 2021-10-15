@@ -7,13 +7,16 @@ const firebaseGuard = async (req, res, next) => {
         return res.status(403).json({valid: false, message: 'Unauthorized Access!'});
     }
 
+    // console.log(req.headers);
     let idToken = req.headers.authorization.split('Bearer ')[1];
+    // console.log(idToken);
     try {
         const decodedToken = await firebase.auth().verifyIdToken(idToken);
         req.user = decodedToken;
+        // console.log(req.user);
         next();        
     } catch(e) {
-        return res.status(403).json({valid: false, message: 'Unauthorized, Invalid Token!'});
+        return res.status(403).json({valid: false, message: 'Unauthorized: ' + e});
     }
 }
 

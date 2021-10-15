@@ -7,6 +7,7 @@ const guard = require('./src/guard/guard');
 const accountsRoutes = require('./src/routes/accounts');
 const currenciesRoutes = require('./src/routes/currencies');
 const usersRoutes = require('./src/routes/users');
+const exchangesRoutes = require('./src/routes/exchanges');
 const badRequestRoutes = require('./src/routes/invalid');
 
 //Allow requests from another servers
@@ -21,9 +22,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 //Routes
+app.use(usersRoutes);
 app.use(accountsRoutes);
 app.use(currenciesRoutes);
-app.use(usersRoutes);
+app.use(exchangesRoutes);
 app.use(badRequestRoutes);
 
 app.listen(server.port, () => {
