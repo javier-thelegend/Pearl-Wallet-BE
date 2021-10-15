@@ -16,16 +16,33 @@ Account.findById = (args) => {
     const bindings = [...args]; //Avoid SQL Injections
     const SQL_SELECT_ACCOUNT = `select a.id as account,
                                     a_t.description as account_type,
-                                    c.abbreviation as currency,
+                                    c.iso_code as currency,
                                     a.balance,
                                     b.description as bank,
                                     to_char(created_at, 'DD/MM/YYYY') as creation_date
                                 from accounts a 
-                                inner join catalog_details a_t on a_t.id = a.account_type and a_t."catalog" = 1
+                                inner join catalogs a_t on a_t.id = a.account_type
                                 inner join currencies c on c.id = a.currency
-                                inner join catalog_details b on b.id = a.bank and b."catalog" = 2
+                                inner join catalogs b on b.id = a.bank
                                 where a.id = $1`;
     return pgdb.query(SQL_SELECT_ACCOUNT, bindings);
+    // return new Promise((resolve, reject) => resolve({rows:[]}));
+}
+
+Account.findTransactions = (args) => {
+    const bindings = [...args]; //Avoid SQL Injections
+    const SQL_SELECT_TRANSACTIONS_BY_ACC = `select t.account, 
+                                                to_char(created_at, 'DD/MM/YYYY') transaction_date, 
+                                                tt.description transaction_type,
+                                                c.description category, 
+                                                t.amount,
+                                                t.balance,
+                                                t.reason
+                                            from transactions t
+                                            inner join catalogs tt on tt.id = t.transaction_type
+                                            inner join catalogs c on c.id = t.category 
+                                            where t.account = $1`;
+    return pgdb.query(SQL_SELECT_TRANSACTIONS_BY_ACC, bindings);
     // return new Promise((resolve, reject) => resolve({rows:[]}));
 }
 
@@ -37,11 +54,21 @@ Account.fetchAll = () => {
                                     b.description as bank,
                                     to_char(created_at, 'DD/MM/YYYY') as creation_date
                                 from accounts a 
-                                inner join catalog_details a_t on a_t.id = a.account_type and a_t."catalog" = 1
+                                inner join catalogs a_t on a_t.id = a.account_type
                                 inner join currencies c on c.id = a.currency
-                                inner join catalog_details b on b.id = a.bank and b."catalog" = 2`;
+                                inner join catalogs b on b.id = a.bank`;
     return pgdb.query(SQL_SELECT_ACCOUNTS);
     // return new Promise((resolve, reject) => resolve({rows:[]}));
+}
+
+Account.update = (args) => {
+    const bindings = [...args]; //Avoid SQL Injections
+    const SQL_UPDATE_ACCOUNT = `update accounts
+                                set account_type = $2, 
+                                    currency = $3, 
+                                    bank = $4
+                                where id = $1`;
+    return pgdb.query(SQL_UPDATE_ACCOUNT, bindings);
 }
 
 module.exports = Account;
