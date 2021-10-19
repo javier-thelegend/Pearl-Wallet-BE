@@ -2,7 +2,7 @@ const Account = require('../models/accounts');
 
 module.exports.createAccount = (req, res, next) => {
     const args = [req.body.account, 
-                    req.body.user, 
+                    req.user.uid, 
                     req.body.accountType, 
                     req.body.balance,
                     req.body.currency,
@@ -30,11 +30,19 @@ module.exports.getAccountTransactions = (req, res, next) => {
         .catch((e) => res.status(400).json({valid: false, message: e}));
 }
 
-module.exports.getAccounts = (req, res, next) => {
-    Account.fetchAll()
+module.exports.getAccountsByUser = (req, res, next) => {
+    const args = [req.user.uid];
+    Account.findByUser(args)
         .then((result) => {
             res.status(200).json({valid: true, data: result.rows})
         })
+        .catch((e) => res.status(400).json({valid: false, message: e}));
+}
+
+module.exports.updateBalanceAccount = (req, res, next) => {
+    const args = [req.params.id, req.body.balance];
+    Account.updateBalance(args)
+        .then(() => res.status(200).json({valid: true, message: 'Account Balance Updated!'}))
         .catch((e) => res.status(400).json({valid: false, message: e}));
 }
 

@@ -5,7 +5,7 @@ const Account = {};
 Account.create = (args) => {
     const bindings = [...args]; //Avoid SQL Injections
     const SQL_CREATE_ACCOUNT = `insert into accounts(id, "user", account_type, balance, currency, bank, created_at)
-                                values($1, $2, $3, $4, $5, $6, current_date)`;
+                                values($1, $2, $3, $4, $5, $6, current_timestamp)`;
     return pgdb.query(SQL_CREATE_ACCOUNT, bindings);
     //resolve active .then in controller
     //reject active .catch in controller
@@ -32,7 +32,7 @@ Account.findById = (args) => {
 Account.findTransactions = (args) => {
     const bindings = [...args]; //Avoid SQL Injections
     const SQL_SELECT_TRANSACTIONS_BY_ACC = `select t.account, 
-                                                to_char(created_at, 'DD/MM/YYYY') transaction_date, 
+                                                to_char(t.created_at, 'DD/MM/YYYY') transaction_date, 
                                                 tt.description transaction_type,
                                                 c.description category, 
                                                 t.amount,
@@ -43,22 +43,32 @@ Account.findTransactions = (args) => {
                                             inner join catalogs c on c.id = t.category 
                                             where t.account = $1`;
     return pgdb.query(SQL_SELECT_TRANSACTIONS_BY_ACC, bindings);
-    // return new Promise((resolve, reject) => resolve({rows:[]}));
+    //return new Promise((resolve, reject) => resolve({rows:[]}));
 }
 
-Account.fetchAll = () => {
-    const SQL_SELECT_ACCOUNTS = `select a.id as account,
+Account.findByUser = (args) => {
+    const bindings = [...args]; //Avoid SQL Injections
+    const SQL_SELECT_ACCOUNTS_BY_USER = `select a.id as account,
                                     a_t.description as account_type,
-                                    c.abbreviation as currency,
+                                    c.iso_code as currency,
                                     a.balance,
                                     b.description as bank,
-                                    to_char(created_at, 'DD/MM/YYYY') as creation_date
+                                    to_char(a.created_at, 'DD/MM/YYYY') as creation_date
                                 from accounts a 
                                 inner join catalogs a_t on a_t.id = a.account_type
                                 inner join currencies c on c.id = a.currency
-                                inner join catalogs b on b.id = a.bank`;
-    return pgdb.query(SQL_SELECT_ACCOUNTS);
+                                inner join catalogs b on b.id = a.bank
+                                where a."user" = $1`;
+    return pgdb.query(SQL_SELECT_ACCOUNTS_BY_USER, bindings);
     // return new Promise((resolve, reject) => resolve({rows:[]}));
+}
+
+Account.updateBalance = (args) => {
+    const bindings = [...args]; //Avoid SQL Injections
+    const SQL_UPDATE_BALANCE = `update accounts
+                                set balance = $2
+                                where id = $1`;
+    return pgdb.query(SQL_UPDATE_BALANCE, bindings);
 }
 
 Account.update = (args) => {
