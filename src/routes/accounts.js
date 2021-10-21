@@ -7,7 +7,8 @@ const {
     getAccount,
     getAccountTransactions,
     updateAccount,
-    updateBalanceAccount
+    updateBalanceAccount,
+    deleteAccount
 } = require('../controllers/accounts');
 
 router.post('/account', createAccount);
@@ -19,5 +20,7 @@ router.get('/account/:id', getAccount);
 router.patch('/account/:id/balance', updateBalanceAccount);
 
 router.patch('/account/:id', updateAccount);
+
+router.delete('/account/:id', deleteAccount);
 
 module.exports = router;

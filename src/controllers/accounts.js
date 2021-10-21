@@ -55,3 +55,10 @@ module.exports.updateAccount = (req, res, next) => {
         .then(() => res.status(200).json({valid: true, message: 'Account Updated!'}))
         .catch((e) => res.status(400).json({valid: false, message: e}));
 }
+
+module.exports.deleteAccount = (req, res, next) => {
+    const args = [req.params.id];
+    Account.delete(args)
+        .then(() => res.status(200).json({valid: true, message: 'Account Deleted!'}))
+        .catch((e) => res.status(400).json({valid: false, message: e}));
+}

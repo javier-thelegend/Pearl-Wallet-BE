@@ -34,10 +34,12 @@ Account.findTransactions = (args) => {
     const SQL_SELECT_TRANSACTIONS_BY_ACC = `select t.account, 
                                                 to_char(t.created_at, 'DD/MM/YYYY') transaction_date, 
                                                 tt.description transaction_type,
-                                                c.description category, 
+                                                case 
+                                                    when c.id = 17 then c.description || ' From: ' || t.transfer_account || ' Reason: ' || t.reason 
+                                                    when c.id = 21 then c.description || ' To: ' || t.transfer_account || ' Reason: ' || t.reason
+                                                else c.description end category, 
                                                 t.amount,
-                                                t.balance,
-                                                t.reason
+                                                t.balance
                                             from transactions t
                                             inner join catalogs tt on tt.id = t.transaction_type
                                             inner join catalogs c on c.id = t.category 
@@ -51,6 +53,7 @@ Account.findByUser = (args) => {
     const SQL_SELECT_ACCOUNTS_BY_USER = `select a.id as account,
                                     a_t.description as account_type,
                                     c.iso_code as currency,
+                                    c.id as currency_id,
                                     a.balance,
                                     b.description as bank,
                                     to_char(a.created_at, 'DD/MM/YYYY') as creation_date
@@ -79,6 +82,12 @@ Account.update = (args) => {
                                     bank = $4
                                 where id = $1`;
     return pgdb.query(SQL_UPDATE_ACCOUNT, bindings);
+}
+
+Account.delete = (args) => {
+    const bindings = [...args]; //Avoid SQL Injections
+    const SQL_DELETE_ACCOUNT = `delete from accounts where id = $1`;
+    return pgdb.query(SQL_DELETE_ACCOUNT, bindings);
 }
 
 module.exports = Account;

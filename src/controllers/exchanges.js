@@ -8,7 +8,7 @@ module.exports.createExchange = (req, res, next) => {
 }
 
 module.exports.getExchange = (req, res, next) => {
-    const args = [req.body.source_currency, req.body.target_currency];
+    const args = [req.params.source_currency, req.params.target_currency];
     // console.log(args);
     Exchange.find(args)
         .then((result) => {
