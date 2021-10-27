@@ -15,15 +15,12 @@ Account.create = (args) => {
 Account.findById = (args) => {
     const bindings = [...args]; //Avoid SQL Injections
     const SQL_SELECT_ACCOUNT = `select a.id as account,
-                                    a_t.description as account_type,
-                                    c.iso_code as currency,
+                                    a.account_type,
+                                    a.currency,
                                     a.balance,
-                                    b.description as bank,
-                                    to_char(created_at, 'DD/MM/YYYY') as creation_date
+                                    a.bank as bank,
+                                    to_char(a.created_at, 'DD/MM/YYYY') as creation_date
                                 from accounts a 
-                                inner join catalogs a_t on a_t.id = a.account_type
-                                inner join currencies c on c.id = a.currency
-                                inner join catalogs b on b.id = a.bank
                                 where a.id = $1`;
     return pgdb.query(SQL_SELECT_ACCOUNT, bindings);
     // return new Promise((resolve, reject) => resolve({rows:[]}));
