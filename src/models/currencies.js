@@ -17,7 +17,7 @@ Currency.findById = (args) => {
 }
 
 Currency.fetchAll = () => {
-    const SQL_SELECT_CURRENCIES = `select id, description, iso_code, to_char(created_at, 'DD/MM/YYYY') created_at from currencies`;
+    const SQL_SELECT_CURRENCIES = `select id, description, iso_code from currencies order by id asc`;
     return pgdb.query(SQL_SELECT_CURRENCIES);
 }
 

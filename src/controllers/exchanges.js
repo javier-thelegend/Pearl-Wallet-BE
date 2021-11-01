@@ -16,3 +16,13 @@ module.exports.getExchange = (req, res, next) => {
         })
         .catch((e) => res.status(400).json({valid: false, message: e}));
 }
+
+module.exports.getExchangeByCurrency = (req, res, next) => {
+    const args = [req.params.currency];
+    // console.log(args);
+    Exchange.findBySourceCurrency(args)
+        .then((result) => {
+            res.status(200).json({valid: true, data: result.rows})
+        })
+        .catch((e) => res.status(400).json({valid: false, message: e}));
+}
